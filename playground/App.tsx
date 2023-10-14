@@ -127,13 +127,21 @@ export function App() {
     document.getElementById('canvas-container')?.appendChild(r.domElement);
     setRenderer(r);
 
+    // Create lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(0, 5, 5);
+    scene.add(directionalLight);
+
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load('/playground/assets/images/bg.webp', function (texture) {
       // Create a material using the loaded texture
       const material = new THREE.MeshBasicMaterial({ map: texture });
 
       // Create a geometry for the mesh
-      const geometry = new THREE.BoxGeometry(10, 10, 1);
+      const geometry = new THREE.BoxGeometry(10, 10, 0);
 
       // Create a mesh using the geometry and material
       const mesh = new THREE.Mesh(geometry, material);
@@ -209,7 +217,6 @@ export function App() {
           node.material.roughness = 0.1;
           node.material.envMapIntensity = 0.5;
   
-  
         }
   
         if (node.name.includes("Brows")) {
@@ -221,7 +228,6 @@ export function App() {
         }
   
         if (node.name.includes("Teeth")) {
-  
           node.receiveShadow = true;
           node.castShadow = true;
           node.material = new MeshStandardMaterial();
@@ -230,8 +236,6 @@ export function App() {
           node.material.normalMap = teethNormalTexture;
   
           node.material.envMapIntensity = 0.7;
-  
-  
         }
   
         if (node.name.includes("Hair")) {
@@ -247,8 +251,6 @@ export function App() {
           node.material.color.setHex(0x000000);
           
           node.material.envMapIntensity = 0.3;
-  
-        
         }
   
         if (node.name.includes("TSHIRT")) {
@@ -266,14 +268,14 @@ export function App() {
         if (node.name.includes("TeethLower")) {
           morphTargetDictionaryLowerTeeth = node.morphTargetDictionary;
         }
-  
       }
     });
     
-    console.log(gltf().scene)
+    let mesh = gltf().scene;
+    console.log(mesh.children[0])
     console.log("printed");
 
-    scene().add(gltf().scene);
+    scene().add(mesh);
     renderer().render(scene(), camera());
   }, [gltf]);
 
